@@ -1,0 +1,38 @@
+<div class="sidebar">
+    <div class="profile-section">
+      <img src="/images/<%= user.image %>" alt="Photo de profil" class="profile-img">
+      <h2><%= user.name %></h2>
+      <p><%= user.email %></p>
+      <div class="status-indicator <%= user.is_online ? 'online' : 'offline' %>">
+        <%= user.is_online ? '🟢 En ligne' : '🔴 Hors ligne' %>
+      </div>
+    </div>
+  
+    <nav class="sidebar-nav">
+      <ul>
+        <li class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
+          <a href="/dashboard">
+            <i class="fas fa-comments"></i>
+            <span>Discussions</span>
+          </a>
+        </li>
+        <li class="nav-item <%= currentPage === 'profile' ? 'active' : '' %>">
+          <a href="/profile">
+            <i class="fas fa-user"></i>
+            <span>Profil</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#">
+            <i class="fas fa-cog"></i>
+            <span>Paramètres</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  
+    <a href="/logout" class="logout-btn">
+      <i class="fas fa-sign-out-alt"></i> Se déconnecter
+    </a>
+  </div>
+  

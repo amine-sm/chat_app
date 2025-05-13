@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscription</title>
+  <link rel="stylesheet" href="/css/register.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+<body>
+  <div class="register-container">
+    <form class="register-form" id="registerForm" aria-label="Formulaire d'inscription" enctype="multipart/form-data">
+      <h2>Inscription</h2>
+      <p id="error-message" class="error-message"></p>
+      <p id="success-message" class="success-message"></p>
+
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="name" name="name" required placeholder=" " aria-label="Nom">
+        <label for="name">Nom</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" name="email" required placeholder=" " aria-label="Email">
+        <label for="email">Email</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" name="password" required placeholder=" " aria-label="Mot de passe">
+        <label for="password">Mot de passe</label>
+      </div>
+
+      <div class="file-input-group">
+        <label for="image">Image de profil</label>
+        <div class="file-input-wrapper">
+          <i class="fas fa-camera"></i>
+          <input type="file" id="image" name="image" accept="image/*" aria-label="Image de profil">
+        </div>
+      </div>
+
+      <button type="submit">
+        <i class="fas fa-user-plus"></i>
+        S'inscrire
+      </button>
+
+      <p class="login-link">
+        Vous avez déjà un compte ? <a href="/">Se connecter</a>
+      </p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('/register', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showSuccess("Inscription réussie ! Redirection vers la page de connexion...");
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 3000);
+        } else {
+          showError(data.error || "Une erreur est survenue lors de l'inscription");
+        }
+      } catch (err) {
+        showError("Erreur de connexion au serveur");
+      }
+    });
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+      successMessage.style.display = 'none';
+      
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+      }, 5000);
+    }
+
+    function showSuccess(message) {
+      successMessage.textContent = message;
+      successMessage.style.display = 'block';
+      errorMessage.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

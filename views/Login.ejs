@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion</title>
+  <link rel="stylesheet" href="/css/login.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+ 
+</head>
+<body>
+  <div class="login-container">
+    <form class="login-form" id="loginForm" aria-label="Formulaire de connexion">
+      <h2>Connexion</h2>
+      <p id="error-message" class="error-message"></p>
+
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" name="email" required placeholder=" " aria-label="Email">
+        <label for="email">Email</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" name="password" required placeholder=" " aria-label="Mot de passe">
+        <label for="password">Mot de passe</label>
+      </div>
+
+      <button type="submit">
+        <i class="fas fa-sign-in-alt"></i>
+        Se connecter
+      </button>
+
+      <p class="register-link">
+        Pas encore de compte ? <a href="/Register">S'inscrire</a>
+      </p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('error-message');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const email = form.email.value.trim();
+      const password = form.password.value.trim();
+
+      try {
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          window.location.href = '/dashboard';
+        } else {
+          showError(data.error || "Identifiants incorrects");
+        }
+      } catch (err) {
+        showError("Erreur de connexion au serveur");
+      }
+    });
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+      errorMessage.classList.remove('hide');
+
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
