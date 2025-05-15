@@ -3,48 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="/css/dashboard.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>NexusChat | Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
-    <img src="/images/<%= user.image %>" alt="Photo de profil" class="profile-img">
-    <h2><%= user.name %></h2>
-    <p><%= user.email %></p>
-    <div class="status-indicator online">🟢 En ligne</div>
+    <div class="profile-section">
+      <img src="/images/<%= user.image %>" alt="Photo de profil" class="profile-img">
+      <h2><%= user.name %></h2>
+      <p><%= user.email %></p>
+      <div class="status-indicator online">En ligne</div>
+    </div>
+
+    <div class="nav-menu">
+      <a href="#" class="nav-item active">
+        <i class="fas fa-comment-dots"></i> Messages
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fas fa-user-friends"></i> Contacts
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fas fa-cog"></i> Paramètres
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fas fa-bell"></i> Notifications
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fas fa-star"></i> Favoris
+      </a>
+    </div>
+
     <a href="/logout" class="logout-btn">
-      <i class="fas fa-sign-out-alt"></i> Se déconnecter
+      <i class="fas fa-sign-out-alt"></i> Déconnexion
     </a>
   </div>
 
+  <!-- Main Content -->
   <div class="main-content">
-    <div class="users-list">
-      <div class="welcome-msg">
-        <i class="fas fa-hand-wave"></i> Bonjour <strong><%= user.name %></strong>, ravi de vous revoir !
-      </div>
-
-      <h1><i class="fas fa-users"></i> Tous les utilisateurs</h1>
-      <div class="user-list">
-        <% users.forEach(u => { %>
-          <% if (u._id.toString() !== user._id.toString()) { %>
-            <div class="user-item" onclick="openChat('<%= u._id %>', '<%= u.name %>', '<%= u.image %>', <%= u.isOnline %>)" data-user-id="<%= u._id %>">
-              <img src="/images/<%= u.image %>" alt="photo utilisateur">
-              <div class="user-info">
-                <h3><%= u.name %></h3>
-                <p class="status <%= u.isOnline ? 'online' : 'offline' %>">
-                  <%= u.isOnline ? '🟢 En ligne' : '🔴 Hors ligne' %>
-                </p>
-              </div>
-              <i class="fas fa-chevron-right"></i>
-              <div class="unread-badge" id="unread-<%= u._id %>" style="display: none;"></div>
-            </div>
-          <% } %>
-        <% }) %>
+    <div class="top-bar">
+      <h1 class="page-title">
+        <i class="fas fa-comments"></i> Messages
+      </h1>
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Rechercher des contacts...">
       </div>
     </div>
 
+    <div class="welcome-card">
+      <div class="welcome-content">
+        <div class="welcome-icon">
+          <i class="fas fa-hand-sparkles"></i>
+        </div>
+        <div class="welcome-text">
+          <h3>Bonjour <strong><%= user.name %></strong> !</h3>
+          <p>Vous avez <strong>3 nouveaux messages</strong> non lus</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="users-grid">
+      <% users.forEach(u => { %>
+        <% if (u._id.toString() !== user._id.toString()) { %>
+          <div class="user-card" onclick="openChat('<%= u._id %>', '<%= u.name %>', '<%= u.image %>', <%= u.isOnline %>)" data-user-id="<%= u._id %>">
+            <img src="/images/<%= u.image %>" alt="photo utilisateur" class="user-avatar">
+            <div class="user-info">
+              <h3><%= u.name %></h3>
+              <p class="user-status <%= u.isOnline ? 'online' : 'offline' %>">
+                <%= u.isOnline ? 'En ligne' : 'Hors ligne' %>
+              </p>
+            </div>
+            <i class="fas fa-chevron-right user-actions"></i>
+            <div class="unread-badge" id="unread-<%= u._id %>" style="display: none;"></div>
+          </div>
+        <% } %>
+      <% }) %>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="showNewChatModal()">
+      <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Chat Modal -->
     <div class="chat-modal" id="chatModal">
       <div class="chat-header">
         <button class="close-btn" onclick="closeChat()">
@@ -105,15 +149,18 @@
     const unreadMessages = {};
     let currentChatUserOnlineStatus = false;
 
-    function showError(message) {
-      const errorDiv = document.createElement('div');
-      errorDiv.className = 'error-notification';
-      errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-      document.body.appendChild(errorDiv);
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i> 
+        ${message}
+      `;
+      document.body.appendChild(notification);
       
       setTimeout(() => {
-        errorDiv.style.opacity = '0';
-        setTimeout(() => errorDiv.remove(), 300);
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
       }, 3000);
     }
 
@@ -133,7 +180,7 @@
         }
       } catch (error) {
         console.error('Erreur incrementUnreadCount:', error);
-        showError('Erreur de mise à jour des messages non lus');
+        showNotification('Erreur de mise à jour des messages non lus', 'error');
       }
     }
 
@@ -150,7 +197,7 @@
         }
       } catch (error) {
         console.error('Erreur resetUnreadCount:', error);
-        showError('Erreur de réinitialisation des messages non lus');
+        showNotification('Erreur de réinitialisation des messages non lus', 'error');
       }
     }
 
@@ -214,13 +261,13 @@
           onlineUsers.clear();
           userIds.forEach(id => onlineUsers.add(id));
           
-          document.querySelectorAll('.user-item').forEach(item => {
+          document.querySelectorAll('.user-card').forEach(item => {
             const userId = item.dataset.userId;
             const isOnline = onlineUsers.has(userId);
-            const statusElement = item.querySelector('.status');
+            const statusElement = item.querySelector('.user-status');
             if (statusElement) {
-              statusElement.textContent = isOnline ? '🟢 En ligne' : '🔴 Hors ligne';
-              statusElement.className = isOnline ? 'status online' : 'status offline';
+              statusElement.textContent = isOnline ? 'En ligne' : 'Hors ligne';
+              statusElement.className = isOnline ? 'user-status online' : 'user-status offline';
             }
           });
 
@@ -327,20 +374,20 @@
       const statusElement = document.getElementById('emptyChatStatus');
       if (statusElement) {
         statusElement.textContent = currentChatUserOnlineStatus ? 
-          '🟢 En ligne - Actif maintenant' : 
-          '🔴 Hors ligne';
+          'En ligne - Actif maintenant' : 
+          'Hors ligne';
         statusElement.className = currentChatUserOnlineStatus ? 
           'empty-chat-status online' : 'empty-chat-status offline';
       }
     }
 
     function updateUserStatus(userId, isOnline) {
-      const userItem = document.querySelector(`.user-item[data-user-id="${userId}"]`);
+      const userItem = document.querySelector(`.user-card[data-user-id="${userId}"]`);
       if (userItem) {
-        const statusElement = userItem.querySelector('.status');
+        const statusElement = userItem.querySelector('.user-status');
         if (statusElement) {
-          statusElement.textContent = isOnline ? '🟢 En ligne' : '🔴 Hors ligne';
-          statusElement.className = isOnline ? 'status online' : 'status offline';
+          statusElement.textContent = isOnline ? 'En ligne' : 'Hors ligne';
+          statusElement.className = isOnline ? 'user-status online' : 'user-status offline';
         }
       }
     }
@@ -349,7 +396,7 @@
       currentChatUserOnlineStatus = isOnline;
       const statusElement = document.getElementById('chatUserStatus');
       if (statusElement) {
-        statusElement.textContent = isOnline ? '🟢 En ligne - Actif maintenant' : '🔴 Hors ligne';
+        statusElement.textContent = isOnline ? 'En ligne - Actif maintenant' : 'Hors ligne';
         statusElement.className = isOnline ? 'user-status online' : 'user-status offline';
       }
       updateEmptyChatStatus();
@@ -364,6 +411,9 @@
           closeChat();
           return;
         }
+
+        // Marquer les messages comme lus avant d'ouvrir le chat
+        markAllMessagesAsRead(userId);
 
         document.getElementById('chatUserName').textContent = userName;
         document.getElementById('chatUserImage').src = `/images/${userImage}`;
@@ -383,9 +433,6 @@
           receiverId: userId
         });
 
-        // Marquer tous les messages comme lus
-        markAllMessagesAsRead(userId);
-        
       } catch (error) {
         console.error('Erreur ouverture chat:', error);
       }
@@ -493,6 +540,10 @@
         isTyping = false;
         socket.emit('stop-typing', currentChatUserId);
       }
+    }
+
+    function showNewChatModal() {
+      showNotification('Fonctionnalité à venir bientôt !');
     }
 
     // Initialisation
