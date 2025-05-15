@@ -46,5 +46,6 @@ user_route.get('/dashboard',Auth.isLogin,usercontroller.dashboardLoad)
 // Route pour sauvegarder un message
 user_route.post('/save-message', Auth.isLogin,usercontroller.saveMessage);
 
+user_route.get('/profil', Auth.isLogin, usercontroller.profileLoad);
 
 module.exports=user_route

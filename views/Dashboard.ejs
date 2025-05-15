@@ -10,36 +10,8 @@
 </head>
 <body>
   <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="profile-section">
-      <img src="/images/<%= user.image %>" alt="Photo de profil" class="profile-img">
-      <h2><%= user.name %></h2>
-      <p><%= user.email %></p>
-      <div class="status-indicator online">En ligne</div>
-    </div>
 
-    <div class="nav-menu">
-      <a href="#" class="nav-item active">
-        <i class="fas fa-comment-dots"></i> Messages
-      </a>
-      <a href="#" class="nav-item">
-        <i class="fas fa-user-friends"></i> Contacts
-      </a>
-      <a href="#" class="nav-item">
-        <i class="fas fa-cog"></i> Paramètres
-      </a>
-      <a href="#" class="nav-item">
-        <i class="fas fa-bell"></i> Notifications
-      </a>
-      <a href="#" class="nav-item">
-        <i class="fas fa-star"></i> Favoris
-      </a>
-    </div>
-
-    <a href="/logout" class="logout-btn">
-      <i class="fas fa-sign-out-alt"></i> Déconnexion
-    </a>
-  </div>
+<%- include('partials/sidebar', { user: user }) %>
 
   <!-- Main Content -->
   <div class="main-content">

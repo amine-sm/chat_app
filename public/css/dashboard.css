@@ -97,6 +97,68 @@
       margin-bottom: 1.5rem;
     }
 
+/* ==================== */
+/* PROFILE PAGE STYLES  */
+/* ==================== */
+.profile-page {
+  max-width: 600px;
+  margin: 3rem auto;
+  background: var(--lighter);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Titre */
+.profile-page h1 {
+  font-size: 2rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+/* Image profil */
+.profile-page img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--primary);
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(115, 103, 240, 0.5);
+}
+
+/* Paragraphes */
+.profile-page p {
+  font-size: 1.1rem;
+  color: var(--dark);
+  margin: 0.4rem 0;
+}
+
+/* Statut en ligne/hors ligne */
+.status-online {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.status-offline {
+  color: var(--gray);
+  font-weight: 600;
+}
+
+/* Liens */
+.profile-links {
+  margin-top: 2rem;
+}
+
+.profile-links a {
+  color: var(--primary);
+  font-weight: 600;
+  margin: 0 0.8rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
     .status-indicator {
       display: inline-flex;
       align-items: center;

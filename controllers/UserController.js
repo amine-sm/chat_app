@@ -114,6 +114,16 @@ const logout = async (req, res) => {
       res.status(500).send('Erreur lors du chargement du dashboard');
     }
   };
+  const profileLoad = async (req, res) => {
+  try {
+    const user = await User.findById(req.session.user._id);
+    res.render('profile', { user });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Erreur lors du chargement du profil');
+  }
+};
+
   const saveMessage = async (req, res) => {
     try {
       const { senderId, receiverId, content } = req.body;
@@ -194,5 +204,6 @@ module.exports = {
   loginLoad,
   logout,
   dashboardLoad,
-  saveMessage
+  saveMessage,
+  profileLoad
 };
